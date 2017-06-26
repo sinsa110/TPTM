@@ -47,7 +47,6 @@ class LDAModel(object):
     def __init__(self,dpre):
 
         self.dpre = dpre #获取预处理参数
-
         #
         #模型参数
         #聚类个数K，迭代次数iter_times,每个类特征词个数top_words_num,超参数α（alpha） β(beta)
@@ -180,11 +179,6 @@ class LDAModel(object):
                 for y in xrange(self.dpre.docs[x].length):
                     f.write(str(self.dpre.docs[x].words[y])+':'+str(self.Z[x][y])+ '\t')
                 f.write('\n')
-
-
-
-
-
 
 def preprocessing():
 

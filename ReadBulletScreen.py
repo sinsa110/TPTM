@@ -25,15 +25,13 @@ class BulletScreen(object):
         	-file : 停用词表文件
         *函数功能:
         	-读取停用词文件，添加停用词
-        '''
+    '''
     def load_stop_words(self,file="data/metadata/stopWords.txt"):
         f = open(file)
         content = f.read().decode('utf-8')
         words = content.split('\n')
         for w in words:
             self.stop_words.add(w.strip())
-
-
 
     '''
         *function name : sliceWithTime
@@ -46,7 +44,8 @@ class BulletScreen(object):
         	-vocabulary: 返回的一个单词表（用于以后的分析）
         *函数功能:
         	-将弹幕文件中的有效弹幕提取出来，提取出的有效弹幕已经排序、分词完毕
-        '''
+    '''
+
     def read(self,file_name,POS_tag):
         f = open(file_name, "r")
         tempLine=[]
@@ -56,15 +55,16 @@ class BulletScreen(object):
             pattern=re.compile("^<d p=\"(.+)\">(.+)</d>")
             m=pattern.match(line)
             if m:
-                temp={"time":int(float(m.group(1).split(',')[0])), \
+                info=m.group(1).split(',')
+                temp={"time":int(float(info[0])), \
                                    "text":[word  for word,flag in pseg.cut(m.group(2))  \
                                            if word not in self.stop_words and flag not in \
                                            POS_tag ],
-                                   "lineno":lineNo+1}
-
+                                   "lineno":lineNo+1,
+                                   "user":info[6]}
 
                 #提取有效弹幕 有效弹幕为长度>3的弹幕
-                if len(temp["text"])>3:
+                if len(temp["text"])>0:
                     tempLine.append(temp)
                     for item in temp["text"]:
                         if item not in vocabulary:
@@ -96,7 +96,7 @@ class BulletScreen(object):
 
 if __name__=="__main__":
     # 所要分析的弹幕文件
-    file_name = "data/1.txt"
+    file_name = "data/18942125.xml"
     # 采用词性过滤的方式来过滤对弹幕挖掘没有实际意义的词 具体可查 http://www.cnblogs.com/adienhsuan/p/5674033.html
     POS_tag = ["m", "w", "g", "c", "o", "p", "z", "q", "un", "e", "r", "x", "d", "t", "h", "k", "y", "u", "s", "uj",
                "ul",
