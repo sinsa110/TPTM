@@ -1,14 +1,14 @@
 import numpy as np
 from DataPreProcessing import DataPreProcessing
-
+import Eq
 class TPTMModel(object):
     def __init__(self,K=5,iters=1000):
 
 
         #the numer of topics in a video
         self.K=K
-        self.user_comment, self.shot_comments,self.shot_comments_vector = DataPreProcessing().\
-            user_all_commnt(timeInterval, file_name, time_length, POS_tag)
+        self.user_comment, self.shot_comments,self.shot_comments_vector,self._comment_2_user_matrix\
+            = DataPreProcessing().user_all_commnt(timeInterval, file_name, time_length, POS_tag)
 
         #the number of shots in a video
         self.v=len(shot_comments)
@@ -19,20 +19,31 @@ class TPTMModel(object):
         #the number of iterations
         self.iters=iters
 
-        #
+        self.vocabulary_length=len(self.shot_comments_vector)
         self.gamma_s=1
 
         self.gamma_c=1
 
 
-    def initialize_lambda_and_x(self):
 
-        self._lambda=np.random.randn(self.v,self.K)
-        self._x=np.random.randn(self.U,self.K)
+       # v*c*K initialize mpre_c to 0
+        self.mpre_c=[np.zeros(len(shot),self.K) for shot in self.shot_comments_vector]
+
+        _eq=Eq()
+        _eq._Eq2_term(self.self.shot_comments_vector)
+        _eq._Eq3_term(self.self.shot_comments_vector)
+
+        self._lambda = np.random.randn(self.v, self.K)
+        self._x_c = np.random.randn(self.U, self.K)
+
 
 
     def _eta(self,i):
         return  0.1/(np.pow(2,i%10))
+
+
+    def _calc_pi_c(self):
+
 
 
     def _Eq7(self,i):
@@ -47,12 +58,9 @@ class TPTMModel(object):
     def _Eq6(self):
         pass
 
-
-    def _Eq2(self):
-        pass
-
     def _Eq3(self):
-        pass
+
+
 
     def _calc_(self):
         for i in range(1,self.iters+1):
