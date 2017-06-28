@@ -128,7 +128,10 @@ if __name__=="__main__":
     save_data_file(shot_comments)
     # print shot_comments
     # print shot_comments_vector
-    print shot_comemnt_number
+    # print shot_comemnt_number
+    # for i in range(1, len(shot_comemnt_number)):
+    #     shot_comemnt_number[i] += shot_comemnt_number[i - 1]
+    # print shot_comemnt_number
 
     #docSet
     # [[{'text': [u'娶', u'我爱你', u'你们好'], 'user': 'ef4a4195', 'lineno': 3, 'time': 5},
@@ -149,6 +152,9 @@ if __name__=="__main__":
 
     #_comment_2_user_matrix
     #[['ef4a4195', 'f9498f81'], ['f9498f82', '3ed492b0', '728e21d2'], []]
+
+    #shot_comemnt_number
+    #[2, 3, 0]
 
 
 

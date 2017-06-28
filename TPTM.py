@@ -60,8 +60,8 @@ class TPTMModel(object):
 
 
         #initialize
-        for i in xrange(1,len(self.shot_comments)):
-            self.shot_comments+=self.shot_comments[i-1]
+        for i in range(1,len(self.shot_comemnt_number)):
+            self.shot_comemnt_number[i]+=self.shot_comemnt_number[i-1]
 
 
 
@@ -79,7 +79,7 @@ class TPTMModel(object):
         self.gamma_c=1
 
        # v*c*K initialize mpre_c to 0
-        self._mpre_c=np.array([np.zeros(len(shot),self.K) for shot in self.shot_comments_vector])
+        self._m_pre_c=np.array([np.zeros(len(shot),self.K) for shot in self.shot_comments_vector])
 
         _eq=Eq()
         _eq._Eq2_term(self.self.shot_comments_vector)
@@ -147,11 +147,11 @@ class TPTMModel(object):
         self.theta = np.array([[0.0 for y in xrange(self.K)] for x in xrange(self.dpre.docs_count)])
         self.phi = np.array([[0.0 for y in xrange(self.dpre.words_count)] for x in xrange(self.K)])
 
+    self._Eq7(self._lambda, self._x_u, self._m_pre_c, self.shot_comments_vector, self.user_comment,
+              self._comment_2_user_matrix, _n_t_c)
 
-
-
-    def _Eq7(self,i):
-        return self._lambda-self._eta(i)*Eq._Eq5()
+    def _Eq7(self,i,_lambda,_x_u,_m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix,_n_t_c):
+        return self._lambda-self._eta(i)*Eq._Eq5(_lambda,_x_u,_m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix,_n_t_c)
 
     def _Eq8(self,i):
         return self._x_u-self._eta(i)*Eq._Eq6()
@@ -187,7 +187,7 @@ class TPTMModel(object):
                 shots_n_t_c.append(shot_n_t_c)
                 shot_n_t_c=[]
 
-
+        return shots_n_t_c
 
 
 
@@ -198,8 +198,10 @@ class TPTMModel(object):
         for x in range(1,self.iter_times+1):
             if x% 200 == 0 and (x % 2 == 0):
                 self._pi=self._calc_pi_c()
-                self._Eq7()
+                _n_t_c=self._calc_n_t_c()
+                self._Eq7(x,self._lambda,self._x_u,self._m_pre_c,self.shot_comments_vector,self.user_comment,self._comment_2_user_matrix,_n_t_c)
             elif x % 200 == 0 and (x % 2 != 0):
+                _n_t_c = self._calc_n_t_c()
                 self._Eq8()
             if x % 200 == 0:
                 Eq._Eq2(self._lambda,self.K)

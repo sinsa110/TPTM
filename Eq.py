@@ -80,13 +80,12 @@ class Eq(object):
     # user_comment
     # {'728e21d2': [(1, 2)], 'f9498f82': [(0, 1), (1, 0)], 'ef4a4195': [(0, 0)], '3ed492b0': [(1, 1)]}
     @staticmethod
-    def _Eq5(self,_lambda,K,_x_u,m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix):
+    def _Eq5(_lambda,K,_x_u,m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix,_n_t_c):
         m_pre_s=self._Eq2(_lambda,K)
         #V*C
         #cacluate _term_2   comment in every shot
         total=[]
         for i,users in enumerate(_comment_2_user_matrix):
-
             #sum all comment in one shot
             _rows=np.zeros(K)
             for j,user in enumerate(users):
@@ -149,7 +148,7 @@ class Eq(object):
     # user_comment
     # {'728e21d2': [(1, 2)], 'f9498f82': [(0, 1), (1, 0)], 'ef4a4195': [(0, 0)], '3ed492b0': [(1, 1)]}
     @staticmethod
-    def _Eq6(_lambda,_x_u,m_pre_c,user_comment,_comment_2_user_matrix,shot_comments_vector):
+    def _Eq6(_lambda,_x_u,m_pre_c,user_comment,_comment_2_user_matrix,shot_comments_vector,_n_t_c):
 
         #traverse all users
         for index,key in enumerate(user_comment):
