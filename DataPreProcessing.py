@@ -8,13 +8,12 @@ from collections import OrderedDict
 import copy
 
 
-class DataPreProcessing(object):
+class BulletPreProcessing(object):
     def __init__(self):
         self.docSet=[]
 
     def addRestComment(self):
         doc=[]
-
         while (len(self.lines)!= 0):
                 doc.append(self.lines[0])
                 self.lines.pop(0)
@@ -42,7 +41,8 @@ class DataPreProcessing(object):
                     break
             if(len(self.lines)==0):
                 self.docSet.append(doc)
-        self.addRestComment()
+        if(len(self.lines)!=0):
+            self.addRestComment()
         print self.docSet
 
 
@@ -67,7 +67,7 @@ class DataPreProcessing(object):
 
 
     #address user's comment and reformat self.docSet()
-    def user_all_commnt(self,timeInterval,file_name,time_length,POS_tag):
+    def user_all_comment(self,timeInterval,file_name,time_length,POS_tag):
         self.sliceWithTime(timeInterval, file_name, time_length, POS_tag)
         self.init_vocabulary()
         shot_number=self.count_comment_number_shot()
@@ -122,9 +122,9 @@ if __name__=="__main__":
     # 采用词性过滤的方式来过滤对弹幕挖掘没有实际意义的词 具体可查 http://www.cnblogs.com/adienhsuan/p/5674033.html
     POS_tag = ["m", "w", "g", "c", "o", "p", "z", "q", "un", "e", "r", "x", "d", "t", "h", "k", "y", "u", "s", "uj",
                "ul","r", "eng"]
-    t=DataPreProcessing()
+    t=BulletPreProcessing()
     user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number=\
-        t.user_all_commnt(timeInterval,file_name,time_length,POS_tag)
+        t.user_all_comment(timeInterval,file_name,time_length,POS_tag)
     save_data_file(shot_comments)
     # print shot_comments
     # print shot_comments_vector

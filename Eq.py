@@ -81,7 +81,8 @@ class Eq(object):
     # {'728e21d2': [(1, 2)], 'f9498f82': [(0, 1), (1, 0)], 'ef4a4195': [(0, 0)], '3ed492b0': [(1, 1)]}
     @staticmethod
     def _Eq5(_lambda,K,_x_u,m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix,_n_t_c):
-        m_pre_s=self._Eq2(_lambda,K)
+        m_pre_s=Eq._Eq2(_lambda,K)
+        print _n_t_c
         #V*C
         #cacluate _term_2   comment in every shot
         total=[]
@@ -91,24 +92,30 @@ class Eq(object):
             for j,user in enumerate(users):
                 #x_u
                 x_u=_x_u[user_comment.keys().index(user)]
-                _rows=x_u*dlgt(x_u*_lambda[i]+m_pre_c[i][j])* \
-                (digamma(np.sum(lgt(x_u*_lambda[i]+m_pre_c[i][j])))\
-                 -digamma(np.sum(lgt(x_u*_lambda[i]+m_pre_c[i][j]))+np.sum(shot_comments_vector[i][j]))\
-                 +digamma(lgt(x_u*_lambda[i]+m_pre_c[i][j]))\
-                 -digamma(lgt(x_u*_lambda[i]+m_pre_c[i][j])))
+                shared_term=x_u*_lambda[i]+m_pre_c[i][j]
+                _rows+=x_u*dlgt(shared_term)* \
+                (digamma(np.sum(lgt(shared_term)))\
+                 -digamma(np.sum(lgt(shared_term))+np.sum(shot_comments_vector[i][j]))\
+                 +digamma(lgt(shared_term)+_n_t_c[i][j])\
+                 -digamma(lgt(shared_term)))
             total.append(_rows)
         _term = -1 * _lambda - m_pre_s+np.array(total)
         return _term
 
     @staticmethod
     def _Eq3(_pi,K):
+        #[[[1.0], [0.36787944117144233]], [[1.0], [0.36787944117144233], [0.1353352832366127, 0.36787944117144233]]]
         term=grab_Eq3_term()
+
         sums=[]
-        for i,item in enumerate(_pi):
+
+        for shot in term:
             sum=[]
-            for j,item2 in enumerate(term):
-                sum.append(np.sum(term2))
+            for comment in shot:
+                sum.append(np.sum(comment))
             sums.append(sum)
+
+
 
         m_pre_c = []
         for i,shot in enumerate(term):
@@ -119,11 +126,13 @@ class Eq(object):
                 else:
                     total=np.zeros(K)
                     for z,item2 in enumerate(item):
-                        total+=_pi[i][z]*iterm2/sums[i][j]
+                        print item2
+                        print _pi[i][z]
+                        print sums[i][j]
+                        total+=_pi[i][z]*item2/sums[i][j]
                     m_pre_c_2.append(total)
             m_pre_c.append(m_pre_c_2)
         return np.array(m_pre_c)
-
 
     #[[[1.0], [0.36787944117144233], [0.1353352832366127, 0.36787944117144233], [0.049787068367863944, 0.1353352832366127, 0.36787944117144233]], [[1.0], [0.36787944117144233], [0.1353352832366127, 0.36787944117144233], [0.049787068367863944, 0.1353352832366127, 0.36787944117144233]], [[1.0], [0.36787944117144233], [0.1353352832366127, 0.36787944117144233], [0.049787068367863944, 0.1353352832366127, 0.36787944117144233]]]
     def _Eq3_term(self,shot_comments_vector):
@@ -142,33 +151,25 @@ class Eq(object):
         store_Eq3_term(_shot_comment)
         return _shot_comment
 
-
-
-
     # user_comment
     # {'728e21d2': [(1, 2)], 'f9498f82': [(0, 1), (1, 0)], 'ef4a4195': [(0, 0)], '3ed492b0': [(1, 1)]}
     @staticmethod
-    def _Eq6(_lambda,_x_u,m_pre_c,user_comment,_comment_2_user_matrix,shot_comments_vector,_n_t_c):
+    def _Eq6(_lambda,K,_x_u,m_pre_c,user_comment,_comment_2_user_matrix,shot_comments_vector,_n_t_c):
 
         #traverse all users
+        total=[]
         for index,key in enumerate(user_comment):
-            -1*_x_u[index]+
+            temp=np.zeros(K)
             for comment in user_comment[key]:
                 i,j=comment[0],comment[1]
                 shared_term=_x_u[index]*_lambda[i]+m_pre_c[i][j]
-                _lambda[i]*dlgt(shared_term)\
+                temp+=_lambda[i]*dlgt(shared_term)\
                 *(digamma(np.sum(lgt(shared_term))\
                 -digamma(np.sum(lgt(shared_term))+np.sum(shot_comments_vector[i][j]))
-                +digamma(lgt(shared_term))\
+                +digamma(lgt(shared_term)+_n_t_c[i][j])\
                 -digamma(lgt(shared_term))))
-
-
-
-
-
-
-
-
+            total.append(-1*_x_u[index] +temp)
+        return np.array(total)
 
 if __name__ == '__main__':
 
