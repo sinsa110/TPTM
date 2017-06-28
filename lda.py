@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
-import logging
-import logging.config
+
 import numpy as np
 import random
 import codecs
@@ -96,7 +95,9 @@ class LDAModel(object):
                 self.nwsum[topic] += 1
 
         self.theta = np.array([ [0.0 for y in xrange(self.K)] for x in xrange(self.dpre.docs_count) ])
-        self.phi = np.array([ [ 0.0 for y in xrange(self.dpre.words_count) ] for x in xrange(self.K)]) 
+        self.phi = np.array([ [ 0.0 for y in xrange(self.dpre.words_count) ] for x in xrange(self.K)])
+
+
     def sampling(self,i,j):
 
         topic = self.Z[i][j]

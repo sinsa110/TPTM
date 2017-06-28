@@ -26,6 +26,8 @@ class BulletScreen(object):
         *函数功能:
         	-读取停用词文件，添加停用词
     '''
+
+
     def load_stop_words(self,file="data/metadata/stopWords.txt"):
         f = open(file)
         content = f.read().decode('utf-8')
@@ -49,7 +51,7 @@ class BulletScreen(object):
     def read(self,file_name,POS_tag):
         f = open(file_name, "r")
         tempLine=[]
-        vocabulary = {}
+        #vocabulary = {}
         jieba.load_userdict("data/metadata/user_dict.txt")
         for lineNo,line in enumerate(f.readlines()):
             pattern=re.compile("^<d p=\"(.+)\">(.+)</d>")
@@ -66,12 +68,12 @@ class BulletScreen(object):
                 #提取有效弹幕 有效弹幕为长度>3的弹幕
                 if len(temp["text"])>0:
                     tempLine.append(temp)
-                    for item in temp["text"]:
-                        if item not in vocabulary:
-                            vocabulary[item]=0
+                    # for item in temp["text"]:
+                    #     if item not in vocabulary:
+                    #         vocabulary[item]=0
 
         lines=sorted(tempLine, key= lambda e:(e.__getitem__('time')))
-        return lines,vocabulary
+        return lines#,vocabulary
 
 
 
