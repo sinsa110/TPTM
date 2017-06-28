@@ -55,6 +55,13 @@ class DataPreProcessing(object):
                         self.vocabulary[item]=0
 
 
+    def count_comment_number_shot(self):
+        shot_number=[]
+        for doc in self.docSet:
+            shot_number.append(len(doc))
+        return shot_number
+
+
 
 
 
@@ -63,12 +70,14 @@ class DataPreProcessing(object):
     def user_all_commnt(self,timeInterval,file_name,time_length,POS_tag):
         self.sliceWithTime(timeInterval, file_name, time_length, POS_tag)
         self.init_vocabulary()
+        shot_number=self.count_comment_number_shot()
         user={}
         shot_comments=[]
         _raw_comment=[]
         _shot_comments_vector=[]
         _comments_vector=[]
         _comment_2_user_matrix=[]
+
         for i,item in enumerate(self.docSet):
             _comment_2_user = []
             _comments_vector = []
@@ -90,9 +99,17 @@ class DataPreProcessing(object):
             _shot_comments_vector.append(_comments_vector)
             _comment_2_user_matrix.append(_comment_2_user)
 
-        return user,shot_comments,_shot_comments_vector,_comment_2_user_matrix
+        return user,shot_comments,_shot_comments_vector,_comment_2_user_matrix,shot_number
 
 
+
+
+def save_data_file(shot_comments,file_name="data/train.dat"):
+        with open(file_name,"w") as f:
+            for shot in shot_comments:
+                for comments in shot:
+                    f.write(" ".join(comments))
+                    f.write("\n")
 
 if __name__=="__main__":
     #时间片大小、单位秒
@@ -106,9 +123,12 @@ if __name__=="__main__":
     POS_tag = ["m", "w", "g", "c", "o", "p", "z", "q", "un", "e", "r", "x", "d", "t", "h", "k", "y", "u", "s", "uj",
                "ul","r", "eng"]
     t=DataPreProcessing()
-    user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix=t.user_all_commnt(timeInterval,file_name,time_length,POS_tag)
-    print shot_comments
-    print shot_comments_vector
+    user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number=\
+        t.user_all_commnt(timeInterval,file_name,time_length,POS_tag)
+    save_data_file(shot_comments)
+    # print shot_comments
+    # print shot_comments_vector
+    print shot_comemnt_number
 
     #docSet
     # [[{'text': [u'娶', u'我爱你', u'你们好'], 'user': 'ef4a4195', 'lineno': 3, 'time': 5},
