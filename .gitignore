@@ -2,7 +2,7 @@
 /GibbsLDApy_TPTM/
 /data/tmp/*
 .idea
-
+*.pyc
 /test/
 /data/cache/*
 
