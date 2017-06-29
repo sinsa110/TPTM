@@ -305,7 +305,7 @@ class TPTMModel(object):
         self.save()
 
     def print_selected_tags(self,selected_tags):
-        with open("result.txt","w") as f:
+        with open("../result.txt","w") as f:
             for index,tag in enumerate(selected_tags):
                 f.write(str(index)+":\n")
                 for item in tag:

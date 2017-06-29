@@ -99,7 +99,7 @@ class BulletScreen(object):
 
 if __name__=="__main__":
     # 所要分析的弹幕文件
-    file_name = "data/1_huan.xml"
+    file_name = "data/huanlesong.xml"
     # 采用词性过滤的方式来过滤对弹幕挖掘没有实际意义的词 具体可查 http://www.cnblogs.com/adienhsuan/p/5674033.html
     POS_tag = ["m", "w", "g", "c", "o", "p", "z", "q", "un", "e", "r", "x", "d", "t", "h", "k", "y", "u", "s", "uj",
                "ul","r", "eng"]
