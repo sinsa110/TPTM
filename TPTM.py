@@ -8,6 +8,11 @@ from  Eq import Eq,lgt,dlgt
 from  LDA import LDAModel
 
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 
 import numpy as np
 import random
@@ -15,8 +20,6 @@ import codecs
 import os
 
 from collections import OrderedDict
-
-
 
 #文件路径
 trainfile = "data/train.dat"
@@ -30,19 +33,32 @@ K = 10
 alpha = 0.1
 beta = 0.1
 iter_times = 1000
-top_words_num = 3
+top_words_num = 10
 
-# 时间片大小、单位秒
-timeInterval = 5
-# 所要分析的弹幕文件
-# file_name = "data/18942125.xml"
-file_name = "data/1.xml"
-# 所要分析弹幕文件的时间长度
-time_length = 11
-# 采用词性过滤的方式来过滤对弹幕挖掘没有实际意义的词 具体可查 http://www.cnblogs.com/adienhsuan/p/5674033.html
-POS_tag = ["m", "w", "g", "c", "o", "p", "z", "q", "un", "e", "r", "x", "d", "t", "h", "k", "y", "u", "s", "uj",
-           "ul", "r", "eng"]
 
+
+
+def read_meta_data():
+    fw = open("data/cache/user_comment", "rb")
+    user_comment=pickle.load(fw)
+    fw.close()
+    fw = open("data/cache/shot_comments", "rb")
+    shot_comments=pickle.load(fw)
+    fw.close()
+    fw = open("data/cache/shot_comments_vector", "rb")
+    shot_comments_vector=pickle.load(fw)
+    fw.close()
+    fw = open("data/cache/_comment_2_user_matrix", "rb")
+    _comment_2_user_matrix=pickle.load(fw)
+    fw.close()
+    fw = open("data/cache/shot_comemnt_number", "rb")
+    shot_comemnt_number=pickle.load(fw)
+    fw.close()
+    fw = open("data/cache/vocabulary", "rb")
+    vocabulary=pickle.load(fw)
+    fw.close()
+
+    return user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary
 
 class Document(object):
     def __init__(self):
@@ -71,7 +87,7 @@ class TPTMModel(object):
         #the numer of topics in a video
         self.K=K
         self.user_comment, self.shot_comments,self.shot_comments_vector,self._comment_2_user_matrix,\
-            self.shot_comment_number= BulletPreProcessing().user_all_comment(timeInterval, file_name, time_length, POS_tag)
+            self.shot_comment_number,self.vocabulary= read_meta_data()
 
 
         #initialize
@@ -152,8 +168,10 @@ class TPTMModel(object):
                 self.nd[x][topic] += 1
                 self.nwsum[topic] += 1
 
-        self.theta = np.array([[0.0 for y in xrange(self.K)] for x in xrange(self.dpre.docs_count)])
-        self.phi = np.array([[0.0 for y in xrange(self.dpre.words_count)] for x in xrange(self.K)])
+        #self.theta = np.array([[0.0 for y in xrange(self.K)] for x in xrange(self.dpre.docs_count)])
+        self.theta = np.full((self.dpre.docs_count,self.K),0.0)
+        #self.phi = np.array([[0.0 for y in xrange(self.dpre.words_count)] for x in xrange(self.K)])
+        self.phi = np.full((self.K,self.dpre.words_count),0.0)
 
 
     def _Eq7(self,i,_lambda,K,_x_u,_m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix,_n_t_c):
@@ -180,21 +198,29 @@ class TPTMModel(object):
 
 
 
-    #check this method over and over again
+    def _calc_alpha(self):
+        alpha_2=[]
+        for shot in self._pi:
+            for comment in shot:
+                alpha_2.append(lgt(comment))
+        self.alpha_2=np.array(alpha_2)
+
+        # check this method over and over again
+
     def _calc_n_t_c(self):
-        shots_n_t_c=[]
-        i=0
-        for index,item in enumerate(self.shot_comment_number):
+        shots_n_t_c = []
+        i = 0
+        for index, item in enumerate(self.shot_comment_number):
             shot_n_t_c = []
-            if index==0:
+            if index == 0:
                 for doc in self.dpre.docs[:item]:
                     n_t_c = np.zeros(self.K)
                     for j in xrange(doc.length):
                         n_t_c[self.Z[i][j]] += 1
-                    i+=1
+                    i += 1
                     shot_n_t_c.append(n_t_c)
             else:
-                for doc in self.dpre.docs[self.shot_comment_number[index-1]:item]:
+                for doc in self.dpre.docs[self.shot_comment_number[index - 1]:item]:
                     n_t_c = np.zeros(self.K)
                     for j in xrange(doc.length):
                         n_t_c[self.Z[i][j]] += 1
@@ -204,12 +230,39 @@ class TPTMModel(object):
         return np.array(shots_n_t_c)
 
 
-    def _calc_alpha(self):
-        alpha_2=[]
-        for shot in self._pi:
-            for comment in shot:
-                alpha_2.append(lgt(comment))
-        self.alpha_2=np.array(alpha_2)
+    def _Eq9(self):
+        shots_tau=[]
+        for index, item in enumerate(self.shot_comment_number):
+            if index==0:
+                shots_tau.append(np.sum(np.array(self.theta[:item])/self.v,axis=0))
+            else:
+                shots_tau.append(np.sum(np.array(self.theta[self.shot_comment_number[index-1]:item])/self.v,axis=0))
+
+        return np.array(shots_tau)
+
+
+    def _Eq10(self,tau,top_N=10):
+        # for t in tau:
+        #     np.sum(t*np.array(self.phi),axis=0)
+        #
+        # for index, item in enumerate(self.shot_comment_number):
+        #     if index == 0:
+        #         shots_tau.append(np.sum(tau[index]*np.array(self.phi[:item]),axis=0))
+        #     else:
+        #         shots_tau.append(
+        #             np.sum(tau[index]*np.array(self.theta[self.shot_comment_number[index - 1]:item]), axis=0))
+
+        p_w_s=np.dot(tau,self.phi)
+        lists=[]
+        for item in p_w_s:
+            list=[]
+            for index,item2 in enumerate(item):
+                list.append((item2,index))
+            lists.append(sorted(list,key=lambda student: student[0],reverse=True)[:top_N])
+
+        return lists
+
+
 
 
 
@@ -243,8 +296,21 @@ class TPTMModel(object):
 
         self._theta()
         self._phi()
+
+
+        tau=self._Eq9()
+        selected_tags=self._Eq10(tau)
+        self.print_selected_tags(selected_tags)
+
         self.save()
 
+    def print_selected_tags(self,selected_tags):
+        with open("result.txt","w") as f:
+            for index,tag in enumerate(selected_tags):
+                f.write(str(index)+":\n")
+                for item in tag:
+                    f.write(str(self.vocabulary.keys()[item[1]])+" "+str(item[0])+" ")
+                f.write("\n")
 
 
     #iteration less than 200
