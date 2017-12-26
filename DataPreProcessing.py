@@ -117,7 +117,7 @@ class BulletPreProcessing(object):
 
 
 
-def save_data_file(shot_comments,file_name="data/train.dat"):
+def save_data_file(shot_comments,file_name="data/train.txt"):
         with open(file_name,"w") as f:
             for shot in shot_comments:
                 for comments in shot:

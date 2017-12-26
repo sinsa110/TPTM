@@ -1,9 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 /GibbsLDApy_TPTM/
-/data/tmp/*
-.idea
+
+/.idea
 *.pyc
 /test/
-/data/cache/*
 
 /LDA.py

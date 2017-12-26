@@ -66,11 +66,15 @@ class BulletScreen(object):
                                    "user":info[6]}
 
                 #提取有效弹幕 有效弹幕为长度>3的弹幕
-                if len(temp["text"])>=3:
+                temp2=[]
+                for index,text in enumerate(temp["text"]):
+                    if len(text)>1:
+                        temp2.append(text)
+                if len(temp2)>=3:
+                    print(temp2)
+                    temp["text"]=temp2
                     tempLine.append(temp)
-                    # for item in temp["text"]:
-                    #     if item not in vocabulary:
-                    #         vocabulary[item]=0
+
 
         lines=sorted(tempLine, key= lambda e:(e.__getitem__('time')))
         print len(lines)

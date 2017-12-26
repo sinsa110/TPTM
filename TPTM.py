@@ -5,8 +5,6 @@ sys.setdefaultencoding('utf-8')
 import numpy as np
 from DataPreProcessing import BulletPreProcessing
 from  Eq import Eq,lgt,dlgt
-from  LDA import LDAModel
-
 
 try:
     import cPickle as pickle
@@ -22,7 +20,7 @@ import os
 from collections import OrderedDict
 
 #文件路径
-trainfile = "data/train.dat"
+trainfile = "data/train.txt"
 thetafile = "data/tmp/thetafile.txt"
 phifile = "data/tmp/phifile.txt"
 wordidmapfile = "data/tmp/wordidmap.txt"
@@ -305,7 +303,7 @@ class TPTMModel(object):
         self.save()
 
     def print_selected_tags(self,selected_tags):
-        with open("../result.txt","w") as f:
+        with open("./result.txt","w") as f:
             for index,tag in enumerate(selected_tags):
                 f.write(str(index)+":\n")
                 for item in tag:
