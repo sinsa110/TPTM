@@ -162,7 +162,7 @@ if __name__=="__main__":
     t=BulletPreProcessing()
     user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary=\
         t.user_all_comment(timeInterval,file_name,time_length,POS_tag)
-    store(user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary)
+    gi(user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary)
     save_data_file(shot_comments)
     # print shot_comments
     # print shot_comments_vector
