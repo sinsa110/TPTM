@@ -11,7 +11,6 @@ try:
 except ImportError:
     import pickle
 
-
 import numpy as np
 import random
 import codecs

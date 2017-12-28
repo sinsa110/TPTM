@@ -115,8 +115,6 @@ class BulletPreProcessing(object):
         return user,shot_comments,_shot_comments_vector,_comment_2_user_matrix,shot_number,self.vocabulary
 
 
-
-
 def save_data_file(shot_comments,file_name="data/train.txt"):
         with open(file_name,"w") as f:
             for shot in shot_comments:
@@ -162,7 +160,7 @@ if __name__=="__main__":
     t=BulletPreProcessing()
     user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary=\
         t.user_all_comment(timeInterval,file_name,time_length,POS_tag)
-    gi(user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary)
+    store(user_comment,shot_comments,shot_comments_vector,_comment_2_user_matrix,shot_comemnt_number,vocabulary)
     save_data_file(shot_comments)
     # print shot_comments
     # print shot_comments_vector
