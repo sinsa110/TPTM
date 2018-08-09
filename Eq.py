@@ -82,7 +82,7 @@ class Eq(object):
     @staticmethod
     def _Eq5(_lambda,K,_x_u,m_pre_c,shot_comments_vector,user_comment,_comment_2_user_matrix,_n_t_c):
         m_pre_s=Eq._Eq2(_lambda,K)
-        print _n_t_c
+        #print _n_t_c
         #V*C
         #cacluate _term_2   comment in every shot
         total=[]
@@ -126,9 +126,9 @@ class Eq(object):
                 else:
                     total=np.zeros(K)
                     for z,item2 in enumerate(item):
-                        print item2
-                        print _pi[i][z]
-                        print sums[i][j]
+                        # print item2
+                        # print _pi[i][z]
+                        # print sums[i][j]
                         total+=_pi[i][z]*item2/sums[i][j]
                     m_pre_c_2.append(total)
             m_pre_c.append(m_pre_c_2)

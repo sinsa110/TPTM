@@ -266,12 +266,12 @@ class TPTMModel(object):
     #LDA algorithm
     def est(self):
         for x in range(1,self.iter_times+1):
-            if x% 200 == 0 and (x % 2 == 0):
+            if x% 200 == 0 and (x/200 % 2 == 0):
                 self._pi=self._calc_pi_c()
                 _n_t_c=self._calc_n_t_c()
                 self._Eq7(x,self._lambda,self.K,self._x_u,self._m_pre_c,self.shot_comments_vector,self.user_comment,self._comment_2_user_matrix,_n_t_c)
 
-            elif x % 200 == 0 and (x % 2 != 0):
+            elif x % 200 == 0 and (x/200 % 2 != 0):
                 _n_t_c = self._calc_n_t_c()
                 self._Eq8(x,self._lambda,self.K,self._x_u,self._m_pre_c,self.user_comment,self._comment_2_user_matrix,self.shot_comments_vector,_n_t_c)
             if x % 200 == 0:

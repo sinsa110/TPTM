@@ -149,8 +149,8 @@ if __name__=="__main__":
     #时间片大小、单位秒
     timeInterval = 300
     # 所要分析的弹幕文件
-    file_name = "data/huanlesong.xml"
-    # file_name = "data/1.xml"
+    #file_name = "data/huanlesong.xml"
+    file_name = "data/33.xml"
     # time_length = 11
     time_length=2582
 
